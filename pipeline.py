@@ -1,36 +1,17 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[ ]:
 
 
 import pandas as pd
 from sqlalchemy import create_engine
 pd.__version__
 
-df = pd.read_csv('yellow_tripdata_2021-01.csv', nrows=100)
-
-df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-
-df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
 
 
 
 engine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')
-print(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))
+
 
 df_iter = pd.read_csv('yellow_tripdata_2021-01.csv', iterator=True, chunksize=100000)
-df = next(df_iter)
-len(df)
-
-
-df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
-df
-df.head(n=0).to_sql(name='yellow_taxi_data', con=engine, if_exists='replace')
-%time df.to_sql(name='yellow_taxi_data', con=engine, if_exists='append')
-
-
 
 from time import time
 while True: 
@@ -47,13 +28,6 @@ while True:
 
     print('inserted another chunk, took %.3f second' % (t_end - t_start))
 
-# In[ ]:
-
-
-get_ipython().system('wget https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv')
-
-
-# In[ ]:
 
 
 df_zones = pd.read_csv('taxi+_zone_lookup.csv')
